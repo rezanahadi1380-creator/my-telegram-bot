@@ -1,5 +1,8 @@
+import json
+import os
 from aiogram import Bot, Dispatcher, Router
 from aiogram.filters import Command
+from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -7,9 +10,6 @@ from aiogram.types import (
     Message,
     ReplyKeyboardMarkup,
 )
-from aiogram.fsm.storage.memory import MemoryStorage
-import json
-import os
 
 TOKEN = '8873507987:AAE04VR6t0upXTWi1_7mEFeRLFEUfgnp7pU'
 ADMIN_ID = 6903327854  # آیدی عددی شما برای دسترسی به آمار
@@ -72,7 +72,7 @@ def not_joined_markup():
   ])
 
 
-# منوی اصلی (بدون دکمه معیوب، تا دکمه خرید اکانت به صورت شیشه‌ای و ویژه ارسال شود)
+# منوی اصلی
 def main_menu(user_id: int):
   kb = [
       [KeyboardButton(text='🎁پست تمپلار🎁')],
@@ -128,12 +128,13 @@ def main_menu(user_id: int):
   )
 
 
-# کیبورد شیشه‌ای ویژه برای خرید اکانت شخصی (که ظاهر بسیار جذاب و متفاوتی دارد)
+# کیبورد شیشه‌ای ویژه برای خرید اکانت شخصی
 def buy_personal_inline_markup():
   return InlineKeyboardMarkup(inline_keyboard=[
       [
           InlineKeyboardButton(
-              text='💎 🔸️خرید اکانت شخصی🔸️ 💎', callback_data='buy_personal_account'
+              text='💎 🔸️خرید اکانت شخصی🔸️ 💎',
+              callback_data='buy_personal_account',
           )
       ]
   ])
@@ -157,8 +158,10 @@ async def start(message: Message):
         try:
           await bot.send_message(
               chat_id=int(inviter_id),
-              text=f'🎉 یک نفر با لینک دعوت شما وارد ربات شد!\n\n👥 تعداد کل دعوت‌های'
-              f' شما: {current_invites_inviter} نفر',
+              text=(
+                  '🎉 یک نفر با لینک دعوت شما وارد ربات شد!\n\n👥 تعداد کل'
+                  f' دعوت‌های شما: {current_invites_inviter} نفر'
+              ),
           )
         except Exception:
           pass
@@ -172,7 +175,6 @@ async def start(message: Message):
     )
     return
 
-  # ارسال منو به همراه دکمه شیشه‌ای ویژه خرید اکانت در بالای آن
   await message.answer(
       '🔥 برای خرید اکانت شخصی اختصاصی، روی دکمه زیر کلیک کنید:',
       reply_markup=buy_personal_inline_markup(),
@@ -407,11 +409,10 @@ async def handle(message: Message):
     )
 
   elif text == '🌐 DNS اختصاصی رایگان':
-    dns_msg = (
+    await message.answer(
         '🌐 DNS اختصاصی و پرسرعت رایگان:\n\nPrimary DNS: 77.88.8.8\nSecondary'
         ' DNS: 88.198.220.33'
     )
-    await message.answer(dns_msg)
 
   elif text == '📢 کانال تلگرام':
     await message.answer(
@@ -443,7 +444,7 @@ async def main():
   await dp.start_polling(bot)
 
 
-If __name__ == '__main__':
+if __name__ == '__main__':
   import asyncio
 
   asyncio.run(main())
