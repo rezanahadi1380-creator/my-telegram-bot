@@ -72,14 +72,10 @@ def not_joined_markup():
   ])
 
 
+# منوی اصلی (بدون دکمه معیوب، تا دکمه خرید اکانت به صورت شیشه‌ای و ویژه ارسال شود)
 def main_menu(user_id: int):
-  # تعریف دکمه خرید اکانت شخصی با استایل قرمز (destructive) در aiogram
-  red_buy_button = KeyboardButton(
-      text='🔸️خرید اکانت شخصی🔸️', style='destructive'
-  )
-
   kb = [
-      [red_buy_button, KeyboardButton(text='🎁پست تمپلار🎁')],
+      [KeyboardButton(text='🎁پست تمپلار🎁')],
       [
           KeyboardButton(text='🎁 اکانت ۱۱ متیک رایگان🎁'),
           KeyboardButton(text='🎁 اکانت ۳۰ فول رایگان🎁'),
@@ -132,6 +128,17 @@ def main_menu(user_id: int):
   )
 
 
+# کیبورد شیشه‌ای ویژه برای خرید اکانت شخصی (که ظاهر بسیار جذاب و متفاوتی دارد)
+def buy_personal_inline_markup():
+  return InlineKeyboardMarkup(inline_keyboard=[
+      [
+          InlineKeyboardButton(
+              text='💎 🔸️خرید اکانت شخصی🔸️ 💎', callback_data='buy_personal_account'
+          )
+      ]
+  ])
+
+
 @router.message(Command('start'))
 async def start(message: Message):
   user_id = str(message.from_user.id)
@@ -165,8 +172,13 @@ async def start(message: Message):
     )
     return
 
+  # ارسال منو به همراه دکمه شیشه‌ای ویژه خرید اکانت در بالای آن
   await message.answer(
-      'سلام! منوی ربات بروز شد:', reply_markup=main_menu(numeric_user_id)
+      '🔥 برای خرید اکانت شخصی اختصاصی، روی دکمه زیر کلیک کنید:',
+      reply_markup=buy_personal_inline_markup(),
+  )
+  await message.answer(
+      'سلام! منوی اصلی ربات:', reply_markup=main_menu(numeric_user_id)
   )
 
 
@@ -186,6 +198,11 @@ async def callback_check_join(callback_query):
       pass
     await bot.send_message(
         chat_id=callback_query.message.chat.id,
+        text='🔥 برای خرید اکانت شخصی اختصاصی، روی دکمه زیر کلیک کنید:',
+        reply_markup=buy_personal_inline_markup(),
+    )
+    await bot.send_message(
+        chat_id=callback_query.message.chat.id,
         text='سلام! به ربات خوش آمدید:',
         reply_markup=main_menu(user_id),
     )
@@ -193,6 +210,19 @@ async def callback_check_join(callback_query):
     await callback_query.answer(
         '❌ شما هنوز در تمام کانال‌ها عضو نشده‌اید!', show_alert=True
     )
+
+
+# مدیریت کلیک روی دکمه شیشه‌ای خرید اکانت شخصی
+@router.callback_query(lambda c: c.data == 'buy_personal_account')
+async def callback_buy_personal(callback_query):
+  personal_buy_msg = (
+      'اگر اکانت شخصی میخوایید فقط خودتون روش پلی بدین با هزینه مناسب فقط کافیه'
+      ' تو پی وی بگین تو چه رنج قیمتی اکانت میخوایید.\n@Ssmmssllpp\n\nلطفا قبل'
+      ' هرچیزی قوانین قبل خرید رو با حوصله چک مرور چک کنین📛👇\n'
+      'https://t.me/TRUST1_MANI/31'
+  )
+  await callback_query.message.answer(personal_buy_msg)
+  await callback_query.answer()
 
 
 @router.message()
@@ -218,18 +248,13 @@ async def handle(message: Message):
 
   if text == '🔄 بروزرسانی منو':
     await message.answer(
+        '🔥 برای خرید اکانت شخصی اختصاصی، روی دکمه زیر کلیک کنید:',
+        reply_markup=buy_personal_inline_markup(),
+    )
+    await message.answer(
         '✅ منوی شما با موفقیت بروزرسانی شد و آخرین تغییرات اعمال گردید:',
         reply_markup=main_menu(numeric_user_id),
     )
-
-  elif text == '🔸️خرید اکانت شخصی🔸️':
-    personal_buy_msg = (
-        'اگر اکانت شخصی میخوایید فقط خودتون روش پلی بدین با هزینه مناسب فقط کافیه'
-        ' تو پی وی بگین تو چه رنج قیمتی اکانت میخوایید.\n@Ssmmssllpp\n\nلطفا قبل'
-        ' هرچیزی قوانین قبل خرید رو با حوصله چک مرور چک کنین📛👇\n'
-        'https://t.me/TRUST1_MANI/31'
-    )
-    await message.answer(personal_buy_msg)
 
   elif text == '🎁پست تمپلار🎁':
     templar_msg = (
@@ -414,11 +439,11 @@ async def handle(message: Message):
 async def main():
   dp.include_router(router)
   await bot.delete_webhook(drop_pending_updates=True)
-  print('Bot is running with Aiogram and styled buttons...')
+  print('Bot is running with Aiogram...')
   await dp.start_polling(bot)
 
 
-if __name__ == '__main__':
+If __name__ == '__main__':
   import asyncio
 
   asyncio.run(main())
