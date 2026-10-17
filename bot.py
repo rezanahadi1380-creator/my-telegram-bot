@@ -1,22 +1,17 @@
+from datetime import datetime
 import json
 import os
-from aiogram import Bot, Dispatcher, Router
-from aiogram.filters import Command
-from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.types import (
+from telebot.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     KeyboardButton,
-    Message,
     ReplyKeyboardMarkup,
 )
+import telebot
 
 TOKEN = '8873507987:AAE04VR6t0upXTWi1_7mEFeRLFEUfgnp7pU'
 ADMIN_ID = 6903327854  # آیدی عددی شما برای دسترسی به آمار
-
-bot = Bot(token=TOKEN)
-dp = Dispatcher(storage=MemoryStorage())
-router = Router()
+bot = telebot.TeleBot(TOKEN)
 
 DATA_FILE = 'users.json'
 CHANNELS = [
@@ -38,10 +33,10 @@ def save_data(data):
 
 
 # تابع بررسی عضویت کاربر در کانال‌ها
-async def check_membership(user_id: int) -> bool:
+def check_membership(user_id):
   try:
     for channel in CHANNELS:
-      member = await bot.get_chat_member(chat_id=channel, user_id=user_id)
+      member = bot.get_chat_member(channel, user_id)
       if member.status not in ['member', 'administrator', 'creator']:
         return False
     return True
@@ -51,97 +46,56 @@ async def check_membership(user_id: int) -> bool:
 
 # دکمه‌های عضویت در کانال‌ها (شیشه‌ای)
 def not_joined_markup():
-  return InlineKeyboardMarkup(inline_keyboard=[
-      [
-          InlineKeyboardButton(
-              text='📢 عضويت در کانال اول',
-              url='https://t.me/cod_manii_yt?start=join',
-          )
-      ],
-      [
-          InlineKeyboardButton(
-              text='📢 عضويت در کانال دوم (اعتماد)',
-              url='https://t.me/TRUST1_MANI?start=join',
-          )
-      ],
-      [
-          InlineKeyboardButton(
-              text='🔄 بررسی عضویت', callback_data='check_join'
-          )
-      ],
-  ])
-
-
-# منوی اصلی
-def main_menu(user_id: int):
-  kb = [
-      [KeyboardButton(text='🎁پست تمپلار🎁')],
-      [
-          KeyboardButton(text='🎁 اکانت ۱۱ متیک رایگان🎁'),
-          KeyboardButton(text='🎁 اکانت ۳۰ فول رایگان🎁'),
-      ],
-      [
-          KeyboardButton(text='🎁 اکانت ارتری رایگان🎁'),
-          KeyboardButton(text='🔥اکانت 10 فول رایگان🔥'),
-      ],
-      [
-          KeyboardButton(text='💥اکانت 20 فول رایگان💥'),
-          KeyboardButton(text='🎁 اکانت روزانه 🎁'),
-      ],
-      [
-          KeyboardButton(text='🎁 40 فول رایگان'),
-          KeyboardButton(text='💥جایزه ویژه💥'),
-      ],
-      [
-          KeyboardButton(text='🎁اکانت خام 117🎁'),
-          KeyboardButton(text='🎁 اکانت KRM 🎁'),
-      ],
-      [
-          KeyboardButton(text='🎁 پست سایرن رایگان'),
-          KeyboardButton(text='🎁 پست گوست متیک رایگان🎁'),
-      ],
-      [
-          KeyboardButton(text='🎁پست اکانت مهندسی🎁'),
-          KeyboardButton(text='🎁 اکانت ۸۰ میلیونی رایگان🎁'),
-      ],
-      [
-          KeyboardButton(text='🎁 ردیم کد کالاف'),
-          KeyboardButton(text='📊 لینک دعوت (رفرال)'),
-      ],
-      [
-          KeyboardButton(text='🌐 DNS اختصاصی رایگان'),
-          KeyboardButton(text='📢 کانال تلگرام'),
-      ],
-      [
-          KeyboardButton(text='📸 پیج اینستاگرام'),
-          KeyboardButton(text='🔄 بروزرسانی منو'),
-      ],
-  ]
-
-  if user_id == ADMIN_ID:
-    kb.append([KeyboardButton(text='📊 اطلاعات و آمار ربات (ادمین)')])
-
-  return ReplyKeyboardMarkup(
-      keyboard=kb,
-      resize_keyboard=True,
-      input_field_placeholder='یک گزینه انتخاب کنید...',
+  markup = InlineKeyboardMarkup()
+  markup.add(
+      InlineKeyboardButton(
+          '📢 عضويت در کانال اول',
+          url='https://t.me/cod_manii_yt?start=join',
+      ),
+      InlineKeyboardButton(
+          '📢 عضويت در کانال دوم (اعتماد)',
+          url='https://t.me/TRUST1_MANI?start=join',
+      ),
   )
+  markup.add(
+      InlineKeyboardButton('🔄 بررسی عضویت', callback_data='check_join')
+  )
+  return markup
 
 
-# کیبورد شیشه‌ای ویژه برای خرید اکانت شخصی
-def buy_personal_inline_markup():
-  return InlineKeyboardMarkup(inline_keyboard=[
-      [
-          InlineKeyboardButton(
-              text='💎 🔸️خرید اکانت شخصی🔸️ 💎',
-              callback_data='buy_personal_account',
-          )
-      ]
-  ])
+def main_menu(user_id):
+  markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+  markup.add(
+      KeyboardButton('🔸️خرید اکانت شخصی🔸️'),
+      KeyboardButton('🎁پست تمپلار🎁'),
+      KeyboardButton('🎁 اکانت ۱۱ متیک رایگان🎁'),
+      KeyboardButton('🎁 اکانت ۳۰ فول رایگان🎁'),
+      KeyboardButton('🎁 اکانت ارتری رایگان🎁'),
+      KeyboardButton('🔥اکانت 10 فول رایگان🔥'),
+      KeyboardButton('💥اکانت 20 فول رایگان💥'),
+      KeyboardButton('🎁 اکانت روزانه 🎁'),
+      KeyboardButton('🎁 40 فول رایگان'),
+      KeyboardButton('💥جایزه ویژه💥'),
+      KeyboardButton('🎁اکانت خام 117🎁'),
+      KeyboardButton('🎁 اکانت KRM 🎁'),
+      KeyboardButton('🎁 پست سایرن رایگان'),
+      KeyboardButton('🎁 پست گوست متیک رایگان🎁'),
+      KeyboardButton('🎁پست اکانت مهندسی🎁'),
+      KeyboardButton('🎁 اکانت ۸۰ میلیونی رایگان🎁'),
+      KeyboardButton('🎁 ردیم کد کالاف'),
+      KeyboardButton('📊 لینک دعوت (رفرال)'),
+      KeyboardButton('🌐 DNS اختصاصی رایگان'),
+      KeyboardButton('📢 کانال تلگرام'),
+      KeyboardButton('📸 پیج اینستاگرام'),
+      KeyboardButton('🔄 بروزرسانی منو'),
+  )
+  if user_id == ADMIN_ID:
+    markup.add(KeyboardButton('📊 اطلاعات و آمار ربات (ادمین)'))
+  return markup
 
 
-@router.message(Command('start'))
-async def start(message: Message):
+@bot.message_handler(commands=['start'])
+def start(message):
   user_id = str(message.from_user.id)
   numeric_user_id = message.from_user.id
 
@@ -156,79 +110,52 @@ async def start(message: Message):
         data[inviter_id]['invites'] += 1
         current_invites_inviter = data[inviter_id]['invites']
         try:
-          await bot.send_message(
-              chat_id=int(inviter_id),
-              text=(
-                  '🎉 یک نفر با لینک دعوت شما وارد ربات شد!\n\n👥 تعداد کل'
-                  f' دعوت‌های شما: {current_invites_inviter} نفر'
-              ),
+          bot.send_message(
+              inviter_id,
+              f'🎉 یک نفر با لینک دعوت شما وارد ربات شد!\n\n👥 تعداد کل دعوت‌های'
+              f' شما: {current_invites_inviter} نفر',
           )
         except Exception:
           pass
     save_data(data)
 
-  if not await check_membership(numeric_user_id):
-    await message.answer(
+  if not check_membership(numeric_user_id):
+    bot.send_message(
+        message.chat.id,
         '⚠️ برای استفاده از ربات، ابتدا باید در کانال‌های ما عضو شوید!\n\nپس از'
         ' عضویت در تمام کانال‌ها، روی دکمه‌ی «بررسی عضویت» بزنید:',
         reply_markup=not_joined_markup(),
     )
     return
 
-  await message.answer(
-      '🔥 برای خرید اکانت شخصی اختصاصی، روی دکمه زیر کلیک کنید:',
-      reply_markup=buy_personal_inline_markup(),
-  )
-  await message.answer(
-      'سلام! منوی اصلی ربات:', reply_markup=main_menu(numeric_user_id)
+  bot.send_message(
+      message.chat.id,
+      'سلام! منوی ربات بروز شد:',
+      reply_markup=main_menu(numeric_user_id),
   )
 
 
-@router.callback_query(lambda c: c.data == 'check_join')
-async def callback_check_join(callback_query):
-  user_id = callback_query.from_user.id
-  if await check_membership(user_id):
-    await callback_query.answer(
-        '✅ تایید شد! حالا می‌‌تونید از ربات استفاده کنید.'
+@bot.callback_query_handler(func=lambda call: call.data == 'check_join')
+def callback_check_join(call):
+  user_id = call.from_user.id
+  if check_membership(user_id):
+    bot.answer_callback_query(
+        call.id, '✅ تایید شد! حالا می‌‌تونید از ربات استفاده کنید.'
     )
-    try:
-      await bot.delete_message(
-          chat_id=callback_query.message.chat.id,
-          message_id=callback_query.message.message_id,
-      )
-    except Exception:
-      pass
-    await bot.send_message(
-        chat_id=callback_query.message.chat.id,
-        text='🔥 برای خرید اکانت شخصی اختصاصی، روی دکمه زیر کلیک کنید:',
-        reply_markup=buy_personal_inline_markup(),
-    )
-    await bot.send_message(
-        chat_id=callback_query.message.chat.id,
-        text='سلام! به ربات خوش آمدید:',
+    bot.delete_message(call.message.chat.id, call.message.message_id)
+    bot.send_message(
+        call.message.chat.id,
+        'سلام! به ربات خوش آمدید:',
         reply_markup=main_menu(user_id),
     )
   else:
-    await callback_query.answer(
-        '❌ شما هنوز در تمام کانال‌ها عضو نشده‌اید!', show_alert=True
+    bot.answer_callback_query(
+        call.id, '❌ شما هنوز در تمام کانال‌ها عضو نشده‌اید!', show_alert=True
     )
 
 
-# مدیریت کلیک روی دکمه شیشه‌ای خرید اکانت شخصی
-@router.callback_query(lambda c: c.data == 'buy_personal_account')
-async def callback_buy_personal(callback_query):
-  personal_buy_msg = (
-      'اگر اکانت شخصی میخوایید فقط خودتون روش پلی بدین با هزینه مناسب فقط کافیه'
-      ' تو پی وی بگین تو چه رنج قیمتی اکانت میخوایید.\n@Ssmmssllpp\n\nلطفا قبل'
-      ' هرچیزی قوانین قبل خرید رو با حوصله چک مرور چک کنین📛👇\n'
-      'https://t.me/TRUST1_MANI/31'
-  )
-  await callback_query.message.answer(personal_buy_msg)
-  await callback_query.answer()
-
-
-@router.message()
-async def handle(message: Message):
+@bot.message_handler(func=lambda message: True)
+def handle(message):
   user_id = str(message.from_user.id)
   numeric_user_id = message.from_user.id
 
@@ -238,43 +165,48 @@ async def handle(message: Message):
     data[user_id] = {'invites': 0, 'last_daily': None}
     save_data(data)
 
-  if not await check_membership(numeric_user_id):
-    await message.answer(
+  if not check_membership(numeric_user_id):
+    bot.send_message(
+        message.chat.id,
         '⚠️ برای استفاده از ربات، ابتدا باید در کانال‌های ما عضو شوید!',
         reply_markup=not_joined_markup(),
     )
     return
 
   current_invites = data[user_id].get('invites', 0)
-  text = message.text
 
-  if text == '🔄 بروزرسانی منو':
-    await message.answer(
-        '🔥 برای خرید اکانت شخصی اختصاصی، روی دکمه زیر کلیک کنید:',
-        reply_markup=buy_personal_inline_markup(),
-    )
-    await message.answer(
+  if message.text == '🔄 بروزرسانی منو':
+    bot.send_message(
+        message.chat.id,
         '✅ منوی شما با موفقیت بروزرسانی شد و آخرین تغییرات اعمال گردید:',
         reply_markup=main_menu(numeric_user_id),
     )
 
-  elif text == '🎁پست تمپلار🎁':
+  elif message.text == '🔸️خرید اکانت شخصی🔸️':
+    personal_buy_msg = (
+        'اگر اکانت شخصی میخوایید فقط خودتون روش پلی بدین با هزینه مناسب فقط کافیه'
+        ' تو پی وی بگین تو چه رنج قیمتی اکانت میخوایید.\n@Ssmmssllpp\n\nلطفا قبل'
+        ' هرچیزی قوانین قبل خرید رو با حوصله چک مرور چک کنین📛👇\n'
+        'https://t.me/TRUST1_MANI/31'
+    )
+    bot.send_message(message.chat.id, personal_buy_msg)
+
+  elif message.text == '🎁پست تمپلار🎁':
     templar_msg = (
         '🎁 اطلاعات اکانت پست تمپلار شما:\n\ncarlos11cod@hotmail.com\ncarlos11cod'
     )
-    await message.answer(templar_msg)
+    bot.send_message(message.chat.id, templar_msg)
 
-  elif text == '🎁 اکانت ۱۱ متیک رایگان🎁':
+  elif message.text == '🎁 اکانت ۱۱ متیک رایگان🎁':
     if current_invites >= 40:
       mythic_11_delivered_msg = (
           'دوست عزیز قبل شما این اکانت به برندش تحویل داده شده دیر اقدام کردی❤️'
           ' این شخص اکانت تحویل گرفته 𝗞𝗔𝗠𝗜 | 𝗡Ø𝗫'
       )
-      await message.answer(mythic_11_delivered_msg)
+      bot.send_message(message.chat.id, mythic_11_delivered_msg)
     else:
       remaining = 40 - current_invites
-      bot_info = await bot.get_me()
-      ref_link = f'https://t.me/{bot_info.username}?start={user_id}'
+      ref_link = f'https://t.me/{(bot.get_me()).username}?start={user_id}'
       mythic_11_ref_msg = (
           'عشقا این اکانت به ارزش ۱۵ میلیون قیمت داره بخاطر این رفرالش بالاس'
           ' ارزش داره ممنون که درک میکنین توجه کنین شما میتونین نه پولی هزینه'
@@ -284,101 +216,101 @@ async def handle(message: Message):
           f' {remaining} نفر\n\n🔗 برای دریافت اکانت، لینک زیر را برای دوستان'
           f' خود بفرستید:\n{ref_link}'
       )
-      await message.answer(mythic_11_ref_msg)
+      bot.send_message(message.chat.id, mythic_11_ref_msg)
 
-  elif text == '🎁 اکانت ۳۰ فول رایگان🎁':
+  elif message.text == '🎁 اکانت ۳۰ فول رایگان🎁':
     prize_30_msg = (
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
         ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/33\n\nاگر میخوای'
         ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۱۱ متیک رایگان🎁'
     )
-    await message.answer(prize_30_msg)
+    bot.send_message(message.chat.id, prize_30_msg)
 
-  elif text == '🎁 اکانت ارتری رایگان🎁':
+  elif message.text == '🎁 اکانت ارتری رایگان🎁':
     artery_delivered_msg = (
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
         ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/36\n\nاگر میخوای'
         ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت 11 متیک رایگان🎁'
     )
-    await message.answer(artery_delivered_msg)
+    bot.send_message(message.chat.id, artery_delivered_msg)
 
-  elif text == '🔥اکانت 10 فول رایگان🔥':
+  elif message.text == '🔥اکانت 10 فول رایگان🔥':
     msg_10 = (
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
         ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/30\n\nاگر میخوای'
         ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۱۱ متیک رایگان🎁'
     )
-    await message.answer(msg_10)
+    bot.send_message(message.chat.id, msg_10)
 
-  elif text == '🎁 اکانت روزانه 🎁':
-    await message.answer('❌ این گزینه فعلا خاموش شده است.')
+  elif message.text == '🎁 اکانت روزانه 🎁':
+    bot.send_message(message.chat.id, '❌ این گزینه فعلا خاموش شده است.')
 
-  elif text == '🎁 40 فول رایگان':
+  elif message.text == '🎁 40 فول رایگان':
     msg_40 = (
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
         ' رو چک کنن چک رضایت تحویل رو چک کنن:\nhttps://t.me/TRUST1_MANI/28\n\nاگر'
         ' میخوای برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۱۱ متیک رایگان🎁'
     )
-    await message.answer(msg_40)
+    bot.send_message(message.chat.id, msg_40)
 
-  elif text == '💥اکانت 20 فول رایگان💥':
+  elif message.text == '💥اکانت 20 فول رایگان💥':
     msg_20 = (
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
         ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/29\n\nاگر میخوای'
         ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۱۱ متیک رایگان🎁'
     )
-    await message.answer(msg_20)
+    bot.send_message(message.chat.id, msg_20)
 
-  elif text == '💥جایزه ویژه💥':
+  elif message.text == '💥جایزه ویژه💥':
     special_prize_msg = (
         'برای شرکت در جایزه ویژه لطفا ۳ پست اخر اینستاگرام لایک سیو شیر کنین به'
         ' 10 نفر هم ارسال کنین اسکرین شات شو به این ایدی زیر ارسال کنین و جایزه'
         ' تون تحویل بگیرین❤️\n\n🆔 @Ssmmssllpp'
     )
-    await message.answer(special_prize_msg)
+    bot.send_message(message.chat.id, special_prize_msg)
 
-  elif text == '🎁اکانت خام 117🎁':
+  elif message.text == '🎁اکانت خام 117🎁':
     post_117_msg = (
         '🎁 اطلاعات اکانت خام 117 شما:\n\nparsa.parsa.92@gmail.com\nparsacallaf92'
     )
-    await message.answer(post_117_msg)
+    bot.send_message(message.chat.id, post_117_msg)
 
-  elif text == '🎁 اکانت KRM 🎁':
+  elif message.text == '🎁 اکانت KRM 🎁':
     krm_msg = (
         '🎁 اطلاعات اکانت KRM شما:\n\narashmehrabi138712@gmail.com\nmahdiznj1386\n\n⚠️'
         ' لطفاً پس از ورود اطلاعات را تغییر دهید.'
     )
-    await message.answer(krm_msg)
+    bot.send_message(message.chat.id, krm_msg)
 
-  elif text == '🎁 پست سایرن رایگان':
+  elif message.text == '🎁 پست سایرن رایگان':
     siren_msg = (
         '🎁 اطلاعات اکانت پست سایرن رایگان شما:\n\n📧 ایمیل:'
         ' Giselhrndz@gmail.com\n🔑 پسورد: Liam180420\n\n⚠️ لطفاً پس از ورود'
         ' اطلاعات را تغییر دهید.'
     )
-    await message.answer(siren_msg)
+    bot.send_message(message.chat.id, siren_msg)
 
-  elif text == '🎁 پست گوست متیک رایگان🎁':
+  elif message.text == '🎁 پست گوست متیک رایگان🎁':
     ghost_msg = (
         '🎁 اطلاعات اکانت پست گوست متیک رایگان شما:\n\n📧 ایمیل:'
         ' keyvan.hozouri@yahoo.com\n🔑 پسورد: Kh112288\n\n⚠️ لطفاً پس از ورود'
         ' اطلاعات را تغییر دهید.'
     )
-    await message.answer(ghost_msg)
+    bot.send_message(message.chat.id, ghost_msg)
 
-  elif text == '🎁پست اکانت مهندسی🎁':
+  elif message.text == '🎁پست اکانت مهندسی🎁':
     engineering_acc_msg = 'arshiamalekshahi07@gmail.com\nmehdi2020'
-    await message.answer(engineering_acc_msg)
+    bot.send_message(message.chat.id, engineering_acc_msg)
 
-  elif text == '🎁 اکانت ۸۰ میلیونی رایگان🎁':
+  elif message.text == '🎁 اکانت ۸۰ میلیونی رایگان🎁':
     account_85m_msg = (
         '🎁 اطلاعات اکانت ۸۰ میلیونی رایگان شما:\n\n📧 ایمیل:'
         ' imamirnazari@gmail.com\n🔑 پسورد: meysam2020\n\n⚠️ لطفاً پس از ورود'
         ' اطلاعات را تغییر دهید.'
     )
-    await message.answer(account_85m_msg)
+    bot.send_message(message.chat.id, account_85m_msg)
 
-  elif text == '🎁 ردیم کد کالاف':
+  elif message.text == '🎁 ردیم کد کالاف':
     if current_invites >= 1:
       codes = (
           'DCEPZBZKFD\nDCCKZBZNB5\nDCCJZBZN4J\nDCCHZBZR3K\nDCCGZBZNCX\nDBGOZBZD8M\n'
@@ -389,62 +321,57 @@ async def handle(message: Message):
           ' کدهای اینستاگرام و بازی‌ها ظرفیت محدودی دارند. اول کدهای بالای لیست را'
           ' تست کنید.'
       )
-      await message.answer(codes)
+      bot.send_message(message.chat.id, codes)
     else:
-      bot_info = await bot.get_me()
-      ref_link = f'https://t.me/{bot_info.username}?start={user_id}'
+      ref_link = f'https://t.me/{(bot.get_me()).username}?start={user_id}'
       ref_msg = (
           f'⚠️ برای دریافت ردیم کدهای کالاف، باید حداقل ۱ نفر را دعوت کرده'
           f' باشید!\n\n👥 تعداد دعوت‌های فعلی شما: {current_invites} نفر\n❌'
           f' تعداد باقی‌مانده: ۱ نفر\n\n🔗 لینک دعوت اختصاصی شما:\n{ref_link}'
       )
-      await message.answer(ref_msg)
+      bot.send_message(message.chat.id, ref_msg)
 
-  elif text == '📊 لینک دعوت (رفرال)':
-    bot_info = await bot.get_me()
-    ref_link = f'https://t.me/{bot_info.username}?start={user_id}'
-    await message.answer(
+  elif message.text == '📊 لینک دعوت (رفرال)':
+    ref_link = f'https://t.me/{(bot.get_me()).username}?start={user_id}'
+    bot.send_message(
+        message.chat.id,
         f'📊 وضعیت دعوت‌های شما: {current_invites} نفر\n\n🔗 لینک اختصاصی'
-        f' شما:\n{ref_link}'
+        f' شما:\n{ref_link}',
     )
 
-  elif text == '🌐 DNS اختصاصی رایگان':
-    await message.answer(
+  elif message.text == '🌐 DNS اختصاصی رایگان':
+    dns_msg = (
         '🌐 DNS اختصاصی و پرسرعت رایگان:\n\nPrimary DNS: 77.88.8.8\nSecondary'
         ' DNS: 88.198.220.33'
     )
+    bot.send_message(message.chat.id, dns_msg)
 
-  elif text == '📢 کانال تلگرام':
-    await message.answer(
+  elif message.text == '📢 کانال تلگرام':
+    bot.send_message(
+        message.chat.id,
         '📢 کانال‌های ما:\n1️⃣ https://t.me/cod_manii_yt\n2️⃣'
-        ' https://t.me/TRUST1_MANI'
+        ' https://t.me/TRUST1_MANI',
     )
 
-  elif text == '📸 پیج اینستاگرام':
-    await message.answer(
+  elif message.text == '📸 پیج اینستاگرام':
+    bot.send_message(
+        message.chat.id,
         '📸 پیج اینستاگرام'
-        ' ما:\nhttps://www.instagram.com/maniiii.yt?igsh=ZWp6ZHdhMjloY2Jh'
+        ' ما:\nhttps://www.instagram.com/maniiii.yt?igsh=ZWp6ZHdhMjloY2Jh',
     )
 
-  elif text == '📊 اطلاعات و آمار ربات (ادمین)':
+  elif message.text == '📊 اطلاعات و آمار ربات (ادمین)':
     if numeric_user_id == ADMIN_ID:
       total_users = len(data)
-      await message.answer(
+      bot.send_message(
+          message.chat.id,
           f'📊 آمار ربات:\n\n👥 کل کاربرانی که ربات را استارت کرده‌اند:'
-          f' {total_users} نفر'
+          f' {total_users} نفر',
       )
     else:
-      await message.answer('❌ شما به این بخش دسترسی ندارید.')
+      bot.send_message(message.chat.id, '❌ شما به این بخش دسترسی ندارید.')
 
 
-async def main():
-  dp.include_router(router)
-  await bot.delete_webhook(drop_pending_updates=True)
-  print('Bot is running with Aiogram...')
-  await dp.start_polling(bot)
-
-
-if __name__ == '__main__':
-  import asyncio
-
-  asyncio.run(main())
+print('Bot is running perfectly...')
+bot.remove_webhook()
+bot.infinity_polling()
