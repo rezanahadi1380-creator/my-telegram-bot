@@ -65,8 +65,14 @@ def not_joined_markup():
 
 def main_menu(user_id):
   markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+
+  # تعریف دکمه خرید اکانت شخصی با استایل قرمز (destructive)
+  red_buy_button = KeyboardButton(
+      '🔸️خرید اکانت شخصی🔸️', style='destructive'
+  )
+
   markup.add(
-      KeyboardButton('🔸️خرید اکانت شخصی🔸️'),
+      red_buy_button,
       KeyboardButton('🎁پست تمپلار🎁'),
       KeyboardButton('🎁 اکانت ۱۱ متیک رایگان🎁'),
       KeyboardButton('🎁 اکانت ۳۰ فول رایگان🎁'),
