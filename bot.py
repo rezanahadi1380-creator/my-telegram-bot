@@ -34,14 +34,15 @@ def save_data(data):
 
 # تابع بررسی عضویت کاربر در کانال‌ها
 def check_membership(user_id):
-  try:
-    for channel in CHANNELS:
+  for channel in CHANNELS:
+    try:
       member = bot.get_chat_member(channel, user_id)
       if member.status not in ['member', 'administrator', 'creator']:
         return False
-    return True
-  except Exception:
-    return False
+    except Exception:
+      # اگر ربات نتواند وضعیت را بگیرد (مثلاً کاربر ربات کانال را بلاک کرده یا عضو نیست)
+      return False
+  return True
 
 
 # دکمه‌های عضویت در کانال‌ها (شیشه‌ای)
@@ -142,7 +143,10 @@ def callback_check_join(call):
     bot.answer_callback_query(
         call.id, '✅ تایید شد! حالا می‌‌تونید از ربات استفاده کنید.'
     )
-    bot.delete_message(call.message.chat.id, call.message.message_id)
+    try:
+      bot.delete_message(call.message.chat.id, call.message.message_id)
+    except Exception:
+      pass
     bot.send_message(
         call.message.chat.id,
         'سلام! به ربات خوش آمدید:',
