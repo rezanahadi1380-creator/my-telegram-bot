@@ -61,8 +61,11 @@ def not_joined_markup():
 
 def main_menu(user_id):
   markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+  # گزینه خرید اکانت شخصی آمد اول تا کاملاً تو چشم باشد
   markup.add(
       KeyboardButton('🔸️خرید اکانت شخصی🔸️'),
+      KeyboardButton('🎁اکانت مهندسی خفن🎁'),
+      KeyboardButton('🎁اکانت by خام🎁'),
       KeyboardButton('🎁پست تمپلار🎁'),
       KeyboardButton('🎁 اکانت ۱۱ متیک رایگان🎁'),
       KeyboardButton('🎁 اکانت ۳۰ فول رایگان🎁'),
@@ -188,6 +191,18 @@ def handle(message):
         ' کافیه تو پی وی بگین تو چه رنج قیمتی اکانت میخوایید.\n@Ssmmssllpp\n\nلطفا'
         ' قبل هرچیزی قوانین قبل خرید رو با حوصله چک مرور چک کنین📛👇\n'
         'https://t.me/TRUST1_MANI/31',
+    )
+
+  elif message.text == '🎁اکانت مهندسی خفن🎁':
+    bot.send_message(
+        message.chat.id,
+        '🎁 اطلاعات اکانت مهندسی خفن:\n\ncatarinaloboo2@gmail.com\n253418873',
+    )
+
+  elif message.text == '🎁اکانت by خام🎁':
+    bot.send_message(
+        message.chat.id,
+        '🎁 اطلاعات اکانت by خام:\n\nfallahail240@gmail.com\n29121356',
     )
 
   elif message.text == '🎁پست تمپلار🎁':
