@@ -61,11 +61,9 @@ def not_joined_markup():
 
 def main_menu(user_id):
   markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-  # گزینه خرید اکانت شخصی آمد اول تا کاملاً تو چشم باشد
+  # دکمه خرید اکانت شخصی به عنوان اولین دکمه قرار گرفت
+  markup.add(KeyboardButton('🔸️خرید اکانت شخصی🔸️'))
   markup.add(
-      KeyboardButton('🔸️خرید اکانت شخصی🔸️'),
-      KeyboardButton('🎁اکانت مهندسی خفن🎁'),
-      KeyboardButton('🎁اکانت by خام🎁'),
       KeyboardButton('🎁پست تمپلار🎁'),
       KeyboardButton('🎁 اکانت ۱۱ متیک رایگان🎁'),
       KeyboardButton('🎁 اکانت ۳۰ فول رایگان🎁'),
@@ -80,6 +78,8 @@ def main_menu(user_id):
       KeyboardButton('🎁 پست سایرن رایگان'),
       KeyboardButton('🎁 پست گوست متیک رایگان🎁'),
       KeyboardButton('🎁پست اکانت مهندسی🎁'),
+      KeyboardButton('🎁اکانت مهندسی خفن🎁'),
+      KeyboardButton('🎁اکانت by خام🎁'),
       KeyboardButton('🎁 اکانت ۸۰ میلیونی رایگان🎁'),
       KeyboardButton('🎁 ردیم کد کالاف'),
       KeyboardButton('📊 لینک دعوت (رفرال)'),
@@ -193,18 +193,6 @@ def handle(message):
         'https://t.me/TRUST1_MANI/31',
     )
 
-  elif message.text == '🎁اکانت مهندسی خفن🎁':
-    bot.send_message(
-        message.chat.id,
-        '🎁 اطلاعات اکانت مهندسی خفن:\n\ncatarinaloboo2@gmail.com\n253418873',
-    )
-
-  elif message.text == '🎁اکانت by خام🎁':
-    bot.send_message(
-        message.chat.id,
-        '🎁 اطلاعات اکانت by خام:\n\nfallahail240@gmail.com\n29121356',
-    )
-
   elif message.text == '🎁پست تمپلار🎁':
     bot.send_message(
         message.chat.id,
@@ -212,21 +200,19 @@ def handle(message):
     )
 
   elif message.text == '🎁 اکانت ۱۱ متیک رایگان🎁':
-    if current_invites >= 40:
+    if current_invites >= 10:
       bot.send_message(
-          message.chat.id,
-          'دوست عزیز قبل شما این اکانت به برندش تحویل داده شده دیر اقدام'
-          ' کردی❤️ این شخص اکانت تحویل گرفته 𝗞𝗔𝗠𝗜 | 𝗡Ø𝗫',
+          message.chat.id, '❗️این اکانت قبل شما به برندش تحویل داده شده است❗️'
       )
     else:
-      remaining = 40 - current_invites
+      remaining = 10 - current_invites
       ref_link = f'https://t.me/{(bot.get_me()).username}?start={user_id}'
       bot.send_message(
           message.chat.id,
           'عشقا این اکانت به ارزش ۱۵ میلیون قیمت داره بخاطر این رفرالش بالاس'
           ' ارزش داره ممنون که درک میکنین توجه کنین شما میتونین نه پولی هزینه'
           ' کنین نه کاری کنین فقط با رفرال گیری اکانت برنده بشین.\n\n⚠️ برای'
-          ' دریافت اکانت ۱۱ متیک رایگان باید ۴۰ نفر را دعوت کنید!\n\n👥 تعداد'
+          ' دریافت اکانت ۱۱ متیک رایگان باید ۱۰ نفر را دعوت کنید!\n\n👥 تعداد'
           f' دعوت‌های فعلی شما: {current_invites} نفر\n❌ تعداد باقی‌مانده:'
           f' {remaining} نفر\n\n🔗 برای دریافت اکانت، لینک زیر را برای دوستان'
           f' خود بفرستید:\n{ref_link}',
@@ -315,6 +301,18 @@ def handle(message):
   elif message.text == '🎁پست اکانت مهندسی🎁':
     bot.send_message(
         message.chat.id, 'arshiamalekshahi07@gmail.com\nmehdi2020'
+    )
+
+  elif message.text == '🎁اکانت مهندسی خفن🎁':
+    bot.send_message(
+        message.chat.id,
+        '🎁 اطلاعات اکانت مهندسی خفن شما:\n\ncatarinaloboo2@gmail.com\n253418873',
+    )
+
+  elif message.text == '🎁اکانت by خام🎁':
+    bot.send_message(
+        message.chat.id,
+        '🎁 اطلاعات اکانت by خام شما:\n\nfallahail240@gmail.com\n29121356',
     )
 
   elif message.text == '🎁 اکانت ۸۰ میلیونی رایگان🎁':
