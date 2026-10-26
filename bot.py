@@ -9,7 +9,7 @@ from telebot.types import (
 )
 import telebot
 
-# توکن جدید شما
+# توکن ربات
 TOKEN = '8873507987:AAF6GbA-Qb1-oToegf99m91xnUTsSC07zEI'
 ADMIN_ID = 6903327854
 bot = telebot.TeleBot(TOKEN)
@@ -61,8 +61,10 @@ def not_joined_markup():
 
 def main_menu(user_id):
   markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-  # دکمه خرید اکانت شخصی به عنوان اولین دکمه قرار گرفت
+  # دکمه خرید اکانت شخصی در اولویت اول قرار دارد
   markup.add(KeyboardButton('🔸️خرید اکانت شخصی🔸️'))
+  # دکمه جدید کد اکانت رایگان
+  markup.add(KeyboardButton('🔥کد اکانت رایگان🔥'))
   markup.add(
       KeyboardButton('🎁پست تمپلار🎁'),
       KeyboardButton('🎁 اکانت ۱۱ متیک رایگان🎁'),
@@ -102,7 +104,7 @@ def start(message):
   data = load_data()
 
   if user_id not in data:
-    data[user_id] = {'invites': 0, 'last_daily': None}
+    data[user_id] = {'invites': 0, 'waiting_for_code': False}
     if len(args) > 1:
       inviter_id = args[1]
       if inviter_id != user_id and inviter_id in data:
@@ -117,6 +119,11 @@ def start(message):
         except Exception:
           pass
     save_data(data)
+  else:
+    # مطمئن شویم فیلد وضعیت کد وجود دارد
+    if 'waiting_for_code' not in data[user_id]:
+      data[user_id]['waiting_for_code'] = False
+      save_data(data)
 
   if not check_membership(numeric_user_id):
     bot.send_message(
@@ -160,11 +167,12 @@ def callback_check_join(call):
 def handle(message):
   user_id = str(message.from_user.id)
   numeric_user_id = message.from_user.id
+  text = message.text
 
   data = load_data()
 
   if user_id not in data:
-    data[user_id] = {'invites': 0, 'last_daily': None}
+    data[user_id] = {'invites': 0, 'waiting_for_code': False}
     save_data(data)
 
   if not check_membership(numeric_user_id):
@@ -177,14 +185,79 @@ def handle(message):
 
   current_invites = data[user_id].get('invites', 0)
 
-  if message.text == '🔄 بروزرسانی منو':
+  # بررسی اینکه آیا کاربر در حالت انتظار برای وارد کردن کد اکانت رایگان است یا خیر
+  if data[user_id].get('waiting_for_code', False):
+    # اگر کاربر دکمه‌های منو را زد، حالت انتظار غیرفعال شود تا منو کار کند
+    menu_buttons = [
+        '🔄 بروزرسانی منو',
+        '🔸️خرید اکانت شخصی🔸️',
+        '🔥کد اکانت رایگان🔥',
+        '🎁پست تمپلار🎁',
+        '🎁 اکانت ۱۱ متیک رایگان🎁',
+        '🎁 اکانت ۳۰ فول رایگان🎁',
+        '🎁 اکانت ارتری رایگان🎁',
+        '🔥اکانت 10 فول رایگان🔥',
+        '💥اکانت 20 فول رایگان💥',
+        '🎁 اکانت روزانه 🎁',
+        '🎁 40 فول رایگان',
+        '💥جایزه ویژه💥',
+        '🎁اکانت خام 117🎁',
+        '🎁 اکانت KRM 🎁',
+        '🎁 پست سایرن رایگان',
+        '🎁 پست گوست متیک رایگان🎁',
+        '🎁پست اکانت مهندسی🎁',
+        '🎁اکانت مهندسی خفن🎁',
+        '🎁اکانت by خام🎁',
+        '🎁 اکانت ۸۰ میلیونی رایگان🎁',
+        '🎁 ردیم کد کالاف',
+        '📊 لینک دعوت (رفرال)',
+        '🌐 DNS اختصاصی رایگان',
+        '📢 کانال تلگرام',
+        '📸 پیج اینستاگرام',
+        '📊 اطلاعات و آمار ربات (ادمین)',
+    ]
+
+    if text not in menu_buttons:
+      # غیرفعال کردن حالت انتظار بعد از ارسال کد
+      data[user_id]['waiting_for_code'] = False
+      save_data(data)
+
+      if text.strip() == 'manifree46':
+        bot.send_message(
+            message.chat.id,
+            '🎁 اطلاعات اکانت رایگان شما:\n\nnaruto-@gmail.com\ntauro2130',
+            reply_markup=main_menu(numeric_user_id),
+        )
+      else:
+        bot.send_message(
+            message.chat.id,
+            '❌ کد وارد شده نامعتبر یا اشتباه است!',
+            reply_markup=main_menu(numeric_user_id),
+        )
+      return
+
+  if text == '🔄 بروزرسانی منو':
+    data[user_id]['waiting_for_code'] = False
+    save_data(data)
     bot.send_message(
         message.chat.id,
         '✅ منوی شما با موفقیت بروزرسانی شد و آخرین تغییرات اعمال گردید:',
         reply_markup=main_menu(numeric_user_id),
     )
 
-  elif message.text == '🔸️خرید اکانت شخصی🔸️':
+  elif text == '🔥کد اکانت رایگان🔥':
+    data[user_id]['waiting_for_code'] = True
+    save_data(data)
+    bot.send_message(
+        message.chat.id,
+        'شما میتوانید کدها را از استوری اینستاگرام و انجام وظایف تحویل بگیرید و'
+        ' اکانت رایگان دریافت کنید. شرایطش هم این است که هر روز استوری‌ها را چک'
+        ' کنید؛ داخل استوری یا دایرکت برایتان کد ارسال می‌شود و با استفاده از'
+        ' این کد می‌توانید از ربات اکانت رایگان تحویل بگیرید. ❗️\n\nلطفاً کد دریافتی'
+        ' خود را ارسال کنید:',
+    )
+
+  elif text == '🔸️خرید اکانت شخصی🔸️':
     bot.send_message(
         message.chat.id,
         'اگر اکانت شخصی میخوایید فقط خودتون روش پلی بدین با هزینه مناسب فقط'
@@ -193,13 +266,13 @@ def handle(message):
         'https://t.me/TRUST1_MANI/31',
     )
 
-  elif message.text == '🎁پست تمپلار🎁':
+  elif text == '🎁پست تمپلار🎁':
     bot.send_message(
         message.chat.id,
         '🎁 اطلاعات اکانت پست تمپلار شما:\n\ncarlos11cod@hotmail.com\ncarlos11cod',
     )
 
-  elif message.text == '🎁 اکانت ۱۱ متیک رایگان🎁':
+  elif text == '🎁 اکانت ۱۱ متیک رایگان🎁':
     if current_invites >= 10:
       bot.send_message(
           message.chat.id, '❗️این اکانت قبل شما به برندش تحویل داده شده است❗️'
@@ -218,7 +291,7 @@ def handle(message):
           f' خود بفرستید:\n{ref_link}',
       )
 
-  elif message.text == '🎁 اکانت ۳۰ فول رایگان🎁':
+  elif text == '🎁 اکانت ۳۰ فول رایگان🎁':
     bot.send_message(
         message.chat.id,
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
@@ -226,7 +299,7 @@ def handle(message):
         ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۱۱ متیک رایگان🎁',
     )
 
-  elif message.text == '🎁 اکانت ارتری رایگان🎁':
+  elif text == '🎁 اکانت ارتری رایگان🎁':
     bot.send_message(
         message.chat.id,
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
@@ -234,7 +307,7 @@ def handle(message):
         ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت 11 متیک رایگان🎁',
     )
 
-  elif message.text == '🔥اکانت 10 فول رایگان🔥':
+  elif text == '🔥اکانت 10 فول رایگان🔥':
     bot.send_message(
         message.chat.id,
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
@@ -242,10 +315,10 @@ def handle(message):
         ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۱۱ متیک رایگان🎁',
     )
 
-  elif message.text == '🎁 اکانت روزانه 🎁':
+  elif text == '🎁 اکانت روزانه 🎁':
     bot.send_message(message.chat.id, '❌ این گزینه فعلا خاموش شده است.')
 
-  elif message.text == '🎁 40 فول رایگان':
+  elif text == '🎁 40 فول رایگان':
     bot.send_message(
         message.chat.id,
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
@@ -253,7 +326,7 @@ def handle(message):
         ' میخوای برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۱۱ متیک رایگان🎁',
     )
 
-  elif message.text == '💥اکانت 20 فول رایگان💥':
+  elif text == '💥اکانت 20 فول رایگان💥':
     bot.send_message(
         message.chat.id,
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
@@ -261,7 +334,7 @@ def handle(message):
         ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۱۱ متیک رایگان🎁',
     )
 
-  elif message.text == '💥جایزه ویژه💥':
+  elif text == '💥جایزه ویژه💥':
     bot.send_message(
         message.chat.id,
         'برای شرکت در جایزه ویژه لطفا ۳ پست اخر اینستاگرام لایک سیو شیر کنین به'
@@ -269,20 +342,20 @@ def handle(message):
         ' تون تحویل بگیرین❤️\n\n🆔 @Ssmmssllpp',
     )
 
-  elif message.text == '🎁اکانت خام 117🎁':
+  elif text == '🎁اکانت خام 117🎁':
     bot.send_message(
         message.chat.id,
         '🎁 اطلاعات اکانت خام 117 شما:\n\nparsa.parsa.92@gmail.com\nparsacallaf92',
     )
 
-  elif message.text == '🎁 اکانت KRM 🎁':
+  elif text == '🎁 اکانت KRM 🎁':
     bot.send_message(
         message.chat.id,
         '🎁 اطلاعات اکانت KRM شما:\n\narashmehrabi138712@gmail.com\nmahdiznj1386\n\n⚠️'
         ' لطفاً پس از ورود اطلاعات را تغییر دهید.',
     )
 
-  elif message.text == '🎁 پست سایرن رایگان':
+  elif text == '🎁 پست سایرن رایگان':
     bot.send_message(
         message.chat.id,
         '🎁 اطلاعات اکانت پست سایرن رایگان شما:\n\n📧 ایمیل:'
@@ -290,7 +363,7 @@ def handle(message):
         ' اطلاعات را تغییر دهید.',
     )
 
-  elif message.text == '🎁 پست گوست متیک رایگان🎁':
+  elif text == '🎁 پست گوست متیک رایگان🎁':
     bot.send_message(
         message.chat.id,
         '🎁 اطلاعات اکانت پست گوست متیک رایگان شما:\n\n📧 ایمیل:'
@@ -298,24 +371,24 @@ def handle(message):
         ' اطلاعات را تغییر دهید.',
     )
 
-  elif message.text == '🎁پست اکانت مهندسی🎁':
+  elif text == '🎁پست اکانت مهندسی🎁':
     bot.send_message(
         message.chat.id, 'arshiamalekshahi07@gmail.com\nmehdi2020'
     )
 
-  elif message.text == '🎁اکانت مهندسی خفن🎁':
+  elif text == '🎁اکانت مهندسی خفن🎁':
     bot.send_message(
         message.chat.id,
         '🎁 اطلاعات اکانت مهندسی خفن شما:\n\ncatarinaloboo2@gmail.com\n253418873',
     )
 
-  elif message.text == '🎁اکانت by خام🎁':
+  elif text == '🎁اکانت by خام🎁':
     bot.send_message(
         message.chat.id,
         '🎁 اطلاعات اکانت by خام شما:\n\nfallahail240@gmail.com\n29121356',
     )
 
-  elif message.text == '🎁 اکانت ۸۰ میلیونی رایگان🎁':
+  elif text == '🎁 اکانت ۸۰ میلیونی رایگان🎁':
     bot.send_message(
         message.chat.id,
         '🎁 اطلاعات اکانت ۸۰ میلیونی رایگان شما:\n\n📧 ایمیل:'
@@ -323,7 +396,7 @@ def handle(message):
         ' اطلاعات را تغییر دهید.',
     )
 
-  elif message.text == '🎁 ردیم کد کالاف':
+  elif text == '🎁 ردیم کد کالاف':
     if current_invites >= 1:
       bot.send_message(
           message.chat.id,
@@ -344,7 +417,7 @@ def handle(message):
           f' تعداد باقی‌مانده: ۱ نفر\n\n🔗 لینک دعوت اختصاصی شما:\n{ref_link}',
       )
 
-  elif message.text == '📊 لینک دعوت (رفرال)':
+  elif text == '📊 لینک دعوت (رفرال)':
     ref_link = f'https://t.me/{(bot.get_me()).username}?start={user_id}'
     bot.send_message(
         message.chat.id,
@@ -352,28 +425,28 @@ def handle(message):
         f' شما:\n{ref_link}',
     )
 
-  elif message.text == '🌐 DNS اختصاصی رایگان':
+  elif text == '🌐 DNS اختصاصی رایگان':
     bot.send_message(
         message.chat.id,
         '🌐 DNS اختصاصی و پرسرعت رایگان:\n\nPrimary DNS: 77.88.8.8\nSecondary'
         ' DNS: 88.198.220.33',
     )
 
-  elif message.text == '📢 کانال تلگرام':
+  elif text == '📢 کانال تلگرام':
     bot.send_message(
         message.chat.id,
         '📢 کانال‌های ما:\n1️⃣ https://t.me/cod_manii_yt\n2️⃣'
         ' https://t.me/TRUST1_MANI',
     )
 
-  elif message.text == '📸 پیج اینستاگرام':
+  elif text == '📸 پیج اینستاگرام':
     bot.send_message(
         message.chat.id,
         '📸 پیج اینستاگرام'
         ' ما:\nhttps://www.instagram.com/maniiii.yt?igsh=ZWp6ZHdhMjloY2Jh',
     )
 
-  elif message.text == '📊 اطلاعات و آمار ربات (ادمین)':
+  elif text == '📊 اطلاعات و آمار ربات (ادمین)':
     if numeric_user_id == ADMIN_ID:
       total_users = len(data)
       bot.send_message(
