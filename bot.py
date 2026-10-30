@@ -9,8 +9,8 @@ from telebot.types import (
 )
 import telebot
 
-# توکن ربات
-TOKEN = '8873507987:AAF6GbA-Qb1-oToegf99m91xnUTsSC07zEI'
+# توکن جدید و امن ربات شما
+TOKEN = '8873507987:AAETldxefKPzr9nwcaHolVAyZ2dcxvO8hbI'
 ADMIN_ID = 6903327854
 bot = telebot.TeleBot(TOKEN)
 
