@@ -61,17 +61,14 @@ def not_joined_markup():
 
 def main_menu(user_id):
   markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-  # دکمه‌های خرید اکانت شخصی و کد اکانت رایگان دقیقاً در اولویت اول و دوم قرار دارند
+  # دکمه خرید اکانت شخصی و کد اکانت رایگان در اولویت اول قرار دارند
   markup.add(
       KeyboardButton('🔸️خرید اکانت شخصی🔸️'),
       KeyboardButton('🔥کد اکانت رایگان🔥'),
   )
   markup.add(
-      KeyboardButton('🎁اکانت 3 متیک رایگان🎁'),
-      KeyboardButton('🎁پست اکانت krm حرفه ای🎁'),
-      KeyboardButton('🎁پست اکانت m4🎁'),
+      KeyboardButton('🎁 اکانت ۳ متیک رایگان🎁'),
       KeyboardButton('🎁پست تمپلار🎁'),
-      KeyboardButton('🎁 اکانت ۱۱ متیک رایگان🎁'),
       KeyboardButton('🎁 اکانت ۳۰ فول رایگان🎁'),
       KeyboardButton('🎁 اکانت ارتری رایگان🎁'),
       KeyboardButton('🔥اکانت 10 فول رایگان🔥'),
@@ -81,6 +78,8 @@ def main_menu(user_id):
       KeyboardButton('💥جایزه ویژه💥'),
       KeyboardButton('🎁اکانت خام 117🎁'),
       KeyboardButton('🎁 اکانت KRM 🎁'),
+      KeyboardButton('🎁پست اکانت krm حرفه ای🎁'),
+      KeyboardButton('🎁پست اکانت m4🎁'),
       KeyboardButton('🎁 پست سایرن رایگان'),
       KeyboardButton('🎁 پست گوست متیک رایگان🎁'),
       KeyboardButton('🎁پست اکانت مهندسی🎁'),
@@ -188,15 +187,13 @@ def handle(message):
 
   current_invites = data[user_id].get('invites', 0)
 
+  # لیست تمامی دکمه‌های منو برای تشخیص حالت انتظار کد
   menu_buttons = [
       '🔄 بروزرسانی منو',
       '🔸️خرید اکانت شخصی🔸️',
       '🔥کد اکانت رایگان🔥',
-      '🎁اکانت 3 متیک رایگان🎁',
-      '🎁پست اکانت krm حرفه ای🎁',
-      '🎁پست اکانت m4🎁',
+      '🎁 اکانت ۳ متیک رایگان🎁',
       '🎁پست تمپلار🎁',
-      '🎁 اکانت ۱۱ متیک رایگان🎁',
       '🎁 اکانت ۳۰ فول رایگان🎁',
       '🎁 اکانت ارتری رایگان🎁',
       '🔥اکانت 10 فول رایگان🔥',
@@ -206,6 +203,8 @@ def handle(message):
       '💥جایزه ویژه💥',
       '🎁اکانت خام 117🎁',
       '🎁 اکانت KRM 🎁',
+      '🎁پست اکانت krm حرفه ای🎁',
+      '🎁پست اکانت m4🎁',
       '🎁 پست سایرن رایگان',
       '🎁 پست گوست متیک رایگان🎁',
       '🎁پست اکانت مهندسی🎁',
@@ -269,49 +268,38 @@ def handle(message):
         'https://t.me/TRUST1_MANI/31',
     )
 
-  elif text == '🎁اکانت 3 متیک رایگان🎁':
-    if current_invites >= 5:
-      bot.send_message(
-          message.chat.id, '❗️این اکانت قبل شما به برنده اش تعلق گرفته است❗️'
-      )
-    else:
-      remaining = 5 - current_invites
-      ref_link = f'https://t.me/{(bot.get_me()).username}?start={user_id}'
-      bot.send_message(
-          message.chat.id,
-          'عشقا این اکانت به ارزش 6 میلیون قیمت داره بخاطر این توجه کنین شما'
-          ' میتونین نه پولی هزینه کنین نه کاری کنین فقط با رفرال گیری اکانت'
-          ' برنده بشین.\n\n⚠️ برای دریافت این اکانت باید ۵ نفر را دعوت'
-          f' کنید!\n\n👥 تعداد دعوت‌های فعلی شما: {current_invites} نفر\n❌ تعداد'
-          f' باقی‌مانده: {remaining} نفر\n\n🔗 لینک دعوت اختصاصی شما:\n{ref_link}',
-      )
-
-  elif text == '🎁پست اکانت krm حرفه ای🎁':
-    bot.send_message(message.chat.id, 'prshanrad5@gmail.com\nDureza@1998')
-
-  elif text == '🎁پست اکانت m4🎁':
-    bot.send_message(message.chat.id, 'elizeu.lucs0@gmail.com\nDureza@1998')
-
   elif text == '🎁پست تمپلار🎁':
     bot.send_message(
         message.chat.id,
         '🎁 اطلاعات اکانت پست تمپلار شما:\n\ncarlos11cod@hotmail.com\ncarlos11cod',
     )
 
-  elif text == '🎁 اکانت ۱۱ متیک رایگان🎁':
-    bot.send_message(
-        message.chat.id,
-        '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
-        ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/50\n\nاگر میخوای'
-        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت 3 متیک رایگان🎁',
-    )
+  elif text == '🎁 اکانت ۳ متیک رایگان🎁':
+    if current_invites >= 5:
+      bot.send_message(
+          message.chat.id, '❗️این اکانت قبل شما به برنده اش تعلق گرفته❗️'
+      )
+    else:
+      remaining = 5 - current_invites
+      ref_link = f'https://t.me/{(bot.get_me()).username}?start={user_id}'
+      bot.send_message(
+          message.chat.id,
+          'عشقا این اکانت به ارزش ۶ میلیون قیمت داره بخاطر این توجه کنین شما'
+          ' میتونین نه پولی هزینه کنین نه کاری کنین فقط با رفرال گیری اکانت'
+          ' برنده بشین.\n\n❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل'
+          ' اکانت هم این لینک رو چک کنین رضایت تحویل'
+          ' 👇\nhttps://t.me/TRUST1_MANI/50\n\n⚠️ برای دریافت اکانت ۳ متیک رایگان'
+          f' باید ۵ نفر را دعوت کنید!\n\n👥 تعداد دعوت‌های فعلی شما:'
+          f' {current_invites} نفر\n❌ تعداد باقی‌مانده: {remaining} نفر\n\n🔗'
+          f' برای دریافت اکانت، لینک زیر را برای دوستان خود بفرستید:\n{ref_link}',
+      )
 
   elif text == '🎁 اکانت ۳۰ فول رایگان🎁':
     bot.send_message(
         message.chat.id,
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
         ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/33\n\nاگر میخوای'
-        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت 3 متیک رایگان🎁',
+        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۳ متیک رایگان🎁',
     )
 
   elif text == '🎁 اکانت ارتری رایگان🎁':
@@ -319,7 +307,7 @@ def handle(message):
         message.chat.id,
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
         ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/36\n\nاگر میخوای'
-        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت 3 متیک رایگان🎁',
+        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۳ متیک رایگان🎁',
     )
 
   elif text == '🔥اکانت 10 فول رایگان🔥':
@@ -327,7 +315,7 @@ def handle(message):
         message.chat.id,
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
         ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/30\n\nاگر میخوای'
-        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت 3 متیک رایگان🎁',
+        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۳ متیک رایگان🎁',
     )
 
   elif text == '🎁 اکانت روزانه 🎁':
@@ -338,7 +326,7 @@ def handle(message):
         message.chat.id,
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
         ' رو چک کنن چک رضایت تحویل رو چک کنن:\nhttps://t.me/TRUST1_MANI/28\n\nاگر'
-        ' میخوای برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت 3 متیک رایگان🎁',
+        ' میخوای برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۳ متیک رایگان🎁',
     )
 
   elif text == '💥اکانت 20 فول رایگان💥':
@@ -346,7 +334,7 @@ def handle(message):
         message.chat.id,
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
         ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/29\n\nاگر میخوای'
-        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت 3 متیک رایگان🎁',
+        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۳ متیک رایگان🎁',
     )
 
   elif text == '💥جایزه ویژه💥':
@@ -368,6 +356,16 @@ def handle(message):
         message.chat.id,
         '🎁 اطلاعات اکانت KRM شما:\n\narashmehrabi138712@gmail.com\nmahdiznj1386\n\n⚠️'
         ' لطفاً پس از ورود اطلاعات را تغییر دهید.',
+    )
+
+  elif text == '🎁پست اکانت krm حرفه ای🎁':
+    bot.send_message(
+        message.chat.id, 'prshanrad5@gmail.com\nDureza@1998',
+    )
+
+  elif text == '🎁پست اکانت m4🎁':
+    bot.send_message(
+        message.chat.id, 'elizeu.lucs0@gmail.com\nDureza@1998',
     )
 
   elif text == '🎁 پست سایرن رایگان':
@@ -443,8 +441,9 @@ def handle(message):
   elif text == '🌐 DNS اختصاصی رایگان':
     bot.send_message(
         message.chat.id,
-        '✔️‌Android(🇩🇪👑)\n\n1.1.1.1🟢🟢\n\n178.20.92.200🟢🟢\n '
-        '2001:6f18:c3a9::ab30❤️🇩🇪\n✍️✍️✍️✍️✍️✍️❤️✍️✍️✍️✍️✍️♾\n2001:f083:6d2a::d92f❤️🇩🇪\n\n👑کانال'
+        '✔️‌Android(🇩🇪👑)\n\n1.1.1.1🟢🟢\n'
+        '                 \n178.20.92.200🟢🟢\n \n2001:6f18:c3a9::ab30❤️🇩🇪'
+        '\n✍️✍️✍️✍️✍️✍️❤️✍️✍️✍️✍️✍️♾\n2001:f083:6d2a::d92f❤️🇩🇪\n\n👑کانال'
         ' مارو به دوستان خود معرفی کنید',
     )
 
