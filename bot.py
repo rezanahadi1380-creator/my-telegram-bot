@@ -9,7 +9,7 @@ from telebot.types import (
 )
 import telebot
 
-# توکن امن و جدید ربات
+# توکن جدید و امن ربات
 TOKEN = '8873507987:AAETldxefKPzr9nwcaHolVAyZ2dcxvO8hbI'
 ADMIN_ID = 6903327854
 bot = telebot.TeleBot(TOKEN)
@@ -61,7 +61,7 @@ def not_joined_markup():
 
 def main_menu(user_id):
   markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-  # دکمه خرید اکانت شخصی و کد اکانت رایگان در اولویت اول قرار دارند
+  # اولویت اول: خرید اکانت شخصی و کد اکانت رایگان
   markup.add(
       KeyboardButton('🔸️خرید اکانت شخصی🔸️'),
       KeyboardButton('🔥کد اکانت رایگان🔥'),
@@ -276,27 +276,12 @@ def handle(message):
     )
 
   elif text == '🎁 اکانت ۱۱ متیک رایگان🎁':
-    if current_invites >= 10:
-      bot.send_message(
-          message.chat.id,
-          '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این'
-          ' لینک رو چک کنین رضایت تحویل'
-          ' 👇\nhttps://t.me/TRUST1_MANI/50\n\nاگر میخوای برنده بعدی تو باشی بزن'
-          ' رو گزینه 🎁 اکانت 3 متیک رایگان🎁',
-      )
-    else:
-      remaining = 10 - current_invites
-      ref_link = f'https://t.me/{(bot.get_me()).username}?start={user_id}'
-      bot.send_message(
-          message.chat.id,
-          'عشقا این اکانت به ارزش ۱۵ میلیون قیمت داره بخاطر این رفرالش بالاس'
-          ' ارزش داره ممنون که درک میکنین توجه کنین شما میتونین نه پولی هزینه'
-          ' کنین نه کاری کنین فقط با رفرال گیری اکانت برنده بشین.\n\n⚠️ برای'
-          ' دریافت اکانت ۱۱ متیک رایگان باید ۱۰ نفر را دعوت کنید!\n\n👥 تعداد'
-          f' دعوت‌های فعلی شما: {current_invites} نفر\n❌ تعداد باقی‌مانده:'
-          f' {remaining} نفر\n\n🔗 برای دریافت اکانت، لینک زیر را برای دوستان'
-          f' خود بفرستید:\n{ref_link}',
-      )
+    bot.send_message(
+        message.chat.id,
+        '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
+        ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/50\n\nاگر میخوای'
+        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت 3 متیک رایگان🎁',
+    )
 
   elif text == '🎁 اکانت ۳ متیک رایگان🎁':
     if current_invites >= 5:
@@ -310,10 +295,10 @@ def handle(message):
           message.chat.id,
           'عشقا این اکانت به ارزش 6 میلیون قیمت داره بخاطر این توجه کنین شما'
           ' میتونین نه پولی هزینه کنین نه کاری کنین فقط با رفرال گیری اکانت'
-          ' برنده بشین.\n\n⚠️ برای دریافت اکانت ۳ متیک رایگان باید ۵ نفر را دعوت'
-          f' کنید!\n\n👥 تعداد دعوت‌های فعلی شما: {current_invites} نفر\n❌ تعداد'
-          f' باقی‌مانده: {remaining} نفر\n\n🔗 برای دریافت اکانت، لینک زیر را'
-          f' برای دوستان خود بفرستید:\n{ref_link}',
+          ' برنده بشین.\n\n⚠️ برای دریافت اکانت ۳ متیک رایگان باید ۵ نفر را'
+          f' دعوت کنید!\n\n👥 تعداد دعوت‌های فعلی شما: {current_invites}'
+          f' نفر\n❌ تعداد باقی‌مانده: {remaining} نفر\n\n🔗 برای دریافت اکانت،'
+          f' لینک زیر را برای دوستان خود بفرستید:\n{ref_link}',
       )
 
   elif text == '🎁 اکانت ۳۰ فول رایگان🎁':
@@ -383,13 +368,13 @@ def handle(message):
   elif text == '🎁پست اکانت krm حرفه ای🎁':
     bot.send_message(
         message.chat.id,
-        'prshanrad5@gmail.com\nDureza@1998',
+        'elizeu.lucs0@gmail.com\nDureza@1998',
     )
 
   elif text == '🎁پست اکانت m4🎁':
     bot.send_message(
         message.chat.id,
-        'elizeu.lucs0@gmail.com\nDureza@1998',
+        'prshanrad5@gmail.com\n(D.H.1.AHX)',
     )
 
   elif text == '🎁 پست سایرن رایگان':
