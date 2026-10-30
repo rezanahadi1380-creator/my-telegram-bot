@@ -9,7 +9,7 @@ from telebot.types import (
 )
 import telebot
 
-# توکن جدید و امن ربات شما
+# توکن جدید و امن ربات
 TOKEN = '8873507987:AAETldxefKPzr9nwcaHolVAyZ2dcxvO8hbI'
 ADMIN_ID = 6903327854
 bot = telebot.TeleBot(TOKEN)
@@ -187,7 +187,6 @@ def handle(message):
 
   current_invites = data[user_id].get('invites', 0)
 
-  # لیست تمامی دکمه‌های منو برای تشخیص حالت انتظار کد
   menu_buttons = [
       '🔄 بروزرسانی منو',
       '🔸️خرید اکانت شخصی🔸️',
@@ -277,7 +276,7 @@ def handle(message):
   elif text == '🎁 اکانت ۳ متیک رایگان🎁':
     if current_invites >= 5:
       bot.send_message(
-          message.chat.id, '❗️این اکانت قبل شما به برنده اش تعلق گرفته❗️'
+          message.chat.id, 'این اکانت قبل شما به برنده اش تعلق گرفته❗️'
       )
     else:
       remaining = 5 - current_invites
@@ -360,12 +359,14 @@ def handle(message):
 
   elif text == '🎁پست اکانت krm حرفه ای🎁':
     bot.send_message(
-        message.chat.id, 'prshanrad5@gmail.com\nDureza@1998',
+        message.chat.id,
+        'prshanrad5@gmail.com\nDureza@1998',
     )
 
   elif text == '🎁پست اکانت m4🎁':
     bot.send_message(
-        message.chat.id, 'elizeu.lucs0@gmail.com\nDureza@1998',
+        message.chat.id,
+        'elizeu.lucs0@gmail.com\nDureza@1998',
     )
 
   elif text == '🎁 پست سایرن رایگان':
