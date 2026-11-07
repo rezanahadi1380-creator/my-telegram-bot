@@ -67,8 +67,9 @@ def main_menu(user_id):
       KeyboardButton('🔥کد اکانت رایگان🔥'),
   )
   markup.add(
-      KeyboardButton('🎁 اکانت ۱۱ متیک رایگان🎁'),
+      KeyboardButton('🎁 اکانت ۸ فول رایگان🎁'),
       KeyboardButton('🎁 اکانت ۳ متیک رایگان🎁'),
+      KeyboardButton('🎁 اکانت ۱۱ متیک رایگان🎁'),
       KeyboardButton('🎁پست تمپلار🎁'),
       KeyboardButton('🎁 اکانت ۳۰ فول رایگان🎁'),
       KeyboardButton('🎁 اکانت ارتری رایگان🎁'),
@@ -84,6 +85,7 @@ def main_menu(user_id):
       KeyboardButton('🎁 پست سایرن رایگان'),
       KeyboardButton('🎁 پست گوست متیک رایگان🎁'),
       KeyboardButton('🎁پست اکانت مهندسی🎁'),
+      KeyboardButton('🎁پست اکانت kilo🎁'),
       KeyboardButton('🎁اکانت مهندسی خفن🎁'),
       KeyboardButton('🎁اکانت by خام🎁'),
       KeyboardButton('🎁 اکانت ۸۰ میلیونی رایگان🎁'),
@@ -192,8 +194,9 @@ def handle(message):
       '🔄 بروزرسانی منو',
       '🔸️خرید اکانت شخصی🔸️',
       '🔥کد اکانت رایگان🔥',
-      '🎁 اکانت ۱۱ متیک رایگان🎁',
+      '🎁 اکانت ۸ فول رایگان🎁',
       '🎁 اکانت ۳ متیک رایگان🎁',
+      '🎁 اکانت ۱۱ متیک رایگان🎁',
       '🎁پست تمپلار🎁',
       '🎁 اکانت ۳۰ فول رایگان🎁',
       '🎁 اکانت ارتری رایگان🎁',
@@ -209,6 +212,7 @@ def handle(message):
       '🎁 پست سایرن رایگان',
       '🎁 پست گوست متیک رایگان🎁',
       '🎁پست اکانت مهندسی🎁',
+      '🎁پست اکانت kilo🎁',
       '🎁اکانت مهندسی خفن🎁',
       '🎁اکانت by خام🎁',
       '🎁 اکانت ۸۰ میلیونی رایگان🎁',
@@ -269,6 +273,23 @@ def handle(message):
         'https://t.me/TRUST1_MANI/31',
     )
 
+  elif text == '🎁 اکانت ۸ فول رایگان🎁':
+    if current_invites >= 10:
+      bot.send_message(
+          message.chat.id, 'این اکانت قبل شما به برنده اش تعلق گرفته❌️'
+      )
+    else:
+      remaining = 10 - current_invites
+      ref_link = f'https://t.me/{(bot.get_me()).username}?start={user_id}'
+      bot.send_message(
+          message.chat.id,
+          'عشقا این اکانت فقط به یک نفر تعلق میگیره و میتونین با رفرال‌گیری'
+          ' برنده بشین.\n\n⚠️ برای دریافت اکانت ۸ فول رایگان باید ۱۰ نفر را دعوت'
+          f' کنید!\n\n👥 تعداد دعوت‌های فعلی شما: {current_invites}'
+          f' نفر\n❌ تعداد باقی‌مانده: {remaining} نفر\n\n🔗 برای دریافت اکانت،'
+          f' لینک زیر را برای دوستان خود بفرستید:\n{ref_link}',
+      )
+
   elif text == '🎁پست تمپلار🎁':
     bot.send_message(
         message.chat.id,
@@ -280,26 +301,16 @@ def handle(message):
         message.chat.id,
         '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
         ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/50\n\nاگر میخوای'
-        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت 3 متیک رایگان🎁',
+        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۳ متیک رایگان🎁',
     )
 
   elif text == '🎁 اکانت ۳ متیک رایگان🎁':
-    if current_invites >= 5:
-      bot.send_message(
-          message.chat.id, 'این اکانت قبل شما به برنده اش تعلق گرفته❗️'
-      )
-    else:
-      remaining = 5 - current_invites
-      ref_link = f'https://t.me/{(bot.get_me()).username}?start={user_id}'
-      bot.send_message(
-          message.chat.id,
-          'عشقا این اکانت به ارزش 6 میلیون قیمت داره بخاطر این توجه کنین شما'
-          ' میتونین نه پولی هزینه کنین نه کاری کنین فقط با رفرال گیری اکانت'
-          ' برنده بشین.\n\n⚠️ برای دریافت اکانت ۳ متیک رایگان باید ۵ نفر را'
-          f' دعوت کنید!\n\n👥 تعداد دعوت‌های فعلی شما: {current_invites}'
-          f' نفر\n❌ تعداد باقی‌مانده: {remaining} نفر\n\n🔗 برای دریافت اکانت،'
-          f' لینک زیر را برای دوستان خود بفرستید:\n{ref_link}',
-      )
+    bot.send_message(
+        message.chat.id,
+        '❌ این اکانت به برنده اش تعلق گرفته برای دیدن تحویل اکانت هم این لینک'
+        ' رو چک کنین رضایت تحویل 👇\nhttps://t.me/TRUST1_MANI/51\n\nاگر میخوای'
+        ' برنده بعدی تو باشی بزن رو گزینه 🎁 اکانت ۸ فول رایگان🎁',
+    )
 
   elif text == '🎁 اکانت ۳۰ فول رایگان🎁':
     bot.send_message(
@@ -395,7 +406,12 @@ def handle(message):
 
   elif text == '🎁پست اکانت مهندسی🎁':
     bot.send_message(
-        message.chat.id, 'arshiamalekshahi07@gmail.com\nmehdi2020'
+        message.chat.id, 'teavatai@gmail.com\nArnoldrmtr01'
+    )
+
+  elif text == '🎁پست اکانت kilo🎁':
+    bot.send_message(
+        message.chat.id, 'wendycastaneda@gmail.com\nwendy1921'
     )
 
   elif text == '🎁اکانت مهندسی خفن🎁':
